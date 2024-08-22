@@ -48,7 +48,21 @@ class Mao{
         return cont;
     }
 
+    //Não sei como fazer a busca ainda
+    int buscar(int k, int pos){
+        int h = log(this->size());
 
+        maior = k;
+
+        for(int i = pos * h; i < pos * h + h; i++){
+            if(vetor[i].b){
+                if(vetor[i].chave == k) return i;
+                if(vetor[i].chave > k) maior = vetor[i].chave;
+            }
+        }
+
+
+    }
     public: 
 
     //Construtor - Começando o vetor com duas posições. 
@@ -71,6 +85,7 @@ class Mao{
         //Fazer busca binária no vetor
         //Mas como faz quando vc encontra um espaço vazio?
         //ACHO que posso olhar a vizinhança 
+
     }
 
     //Imprimir em ordem apenas os valores cujo booleano é diferente de false
