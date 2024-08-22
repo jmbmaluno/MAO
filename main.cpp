@@ -35,28 +35,19 @@ class Mao{
         int qtde;
     } Intevalo;
     
-    int contar_valores(int no, int profundidade, Intervalo i){
+    int contar_valores(int no){
         int cont = i.qtde;
         int h = log(this->size());
 
-        int total_espaço = ( h - profundidade + 1) * h 
-
-        int pos_inicio;
-
-        if(i.direcao = 0){
-            pos_inicio = no*h;
+       
+        for(int i = no*h; i < no*h + h; i++){
+            if(vetor[i].b) cont++;
         }
-        else{
-            //cont = cont + contar_valores((no << 1) -1 * i.direcao, profundidade-1;  )
-        }
+
+
+        return cont;
     }
 
-    
-    /*
-    int encontrar_pos(int k, int folha_atual, int target){
-        int d = densidade(folha_atual, log(this->size()), {-1,0});
-    }
-    */
 
     public: 
 
@@ -66,7 +57,7 @@ class Mao{
         vetor = new Valor[2];
 
         vetor[0] = {0, false};
-        vetor[1] = {0, false};
+        vetor[1] = {2, true};
         len = 2;
     }
 
@@ -75,6 +66,12 @@ class Mao{
         return len;
     }
 
+
+    void inserir(int k){
+        //Fazer busca binária no vetor
+        //Mas como faz quando vc encontra um espaço vazio?
+        //ACHO que posso olhar a vizinhança 
+    }
 
     //Imprimir em ordem apenas os valores cujo booleano é diferente de false
     void imprimir(){
@@ -86,53 +83,10 @@ class Mao{
 
     }
 
-    void incluir(int k){
-        int folha_atual = 0; //guarda a folha em que estou
-        int cont = 0;
-        int n = this->size();
-        int l = log(n);
-
-        int target = -1; //pos que guarda o menor valor maior do quê k
-
-        int i = 0; //iterador
-
-        while(i < n){
-
-            cont++;
-
-            if(cont == l){
-                folha_atual++;
-            }
-
-            if(vetor[i].b){
-
-                if(vetor[i].chave >= k){
-                    target = i;
-                    i = n;
-                }
-            }
-
-            i++;
-        }
-
-        //Depois dessa busca folha_atual marca a folha em que eu devo inserir o novo valor
-        
-        /*
-        if(target == -1){
-            cout << "fui até o final do vetor e n achei alguém maior\n";
-            cout << folha_atual << "\n";
-        }
-        else{
-            cout << "a posição " << target << " tem um valor maior ou igual ao que quero incluir e está na folha " << folha_atual << "\n";
-
-        }
-        */
-        
-        //Retorna a posição do vetor já redistribuido em que k deve ser incluido
-        //int pos = encontrar_pos(k, folha_atual, target);
-
-        //vetor[pos] = k;
+    void teste(){
+        cout << contar_valores(0) << "\n";
     }
+    
 
 };
 
@@ -140,5 +94,5 @@ int main(){
 
     Mao m;
 
-    m.incluir(3);
+    m.teste();
 }
