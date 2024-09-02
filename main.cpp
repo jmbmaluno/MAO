@@ -110,4 +110,8 @@ int main(){
     Mao m;
 
     m.imprimir();
+
+    m.incluir(3,0);
+
+    m.imprimir();
 }

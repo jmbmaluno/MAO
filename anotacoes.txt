@@ -1,0 +1,20 @@
+O vetor tem um tamanho O(n).
+
+Ele começa com tamanho 2. Se a densidade não tiver dentro
+dos limites então, dobra de tamanho e divide espaçadamente os elementos
+
+
+tenho que definir como achar a profundidade dos intervalos
+
+cada espaço folha tem lg(n) elementos
+
+Entao, para incluir um elemento eu vou fazendo um scan
+até o seu sucessor e vejo em que folha ele está
+faço o calculo de densidade, 
+    se estiver ok, então eu balancear e incluir ele lá
+    
+    senão, eu vejo quem é o pai e faço o scan no outro filho
+    para calcular a densidade. Se tiver ok, então balancear e incluir ele lá
+    
+        se não tiver mais pai, então eu tenho que dobrar o tamanho e incluir o novo elemento balanceando todos os elementos
+        
