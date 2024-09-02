@@ -1,21 +1,12 @@
-#include <iostream>
-
-using namespace std;
-
-//Calcula o piso do log de k na base 2
-int log(int k){
-    int res = 0;
-
-    while (k != 1){
-        k = k >> 1;
-        res++;
-    }
-
-    return res;
-
-}
+#include "Mao.hpp"
 
 
+/*
+IDEIA: guardar os maiores valores de cada folha e a posição deles no subspaço da folha para facilitar a busca de onde os elementos devem estar
+guardando os maiores valores eu posso fazer uma busca binária neles para saber onde o valor buscado deveria estar.
+*/
+
+/*
 class Mao{
 
     //Para marcar quais posições do vetores foram efetivamente preenchidas pelo usuário e quais são apenas lixo de memória
@@ -26,14 +17,17 @@ class Mao{
         int chave;
         bool b;
     } Valor;
+    
+    typedef struct {
+        Valor valor;
+        int pos;
+    } Max;
 
     Valor* vetor;
+    Valor* max_valores;
     int len;
 
-    typedef struct {
-        int direcao;
-        int qtde;
-    } Intevalo;
+    
     
     int contar_valores(int no){
         int cont = i.qtde;
@@ -63,6 +57,7 @@ class Mao{
 
 
     }
+
     public: 
 
     //Construtor - Começando o vetor com duas posições. 
@@ -71,8 +66,12 @@ class Mao{
         vetor = new Valor[2];
 
         vetor[0] = {0, false};
-        vetor[1] = {2, true};
+        vetor[1] = {0, false};
         len = 2;
+
+        max_valores = new Max[2];
+        max_valores[0] = {{0,false}, -1}
+        max_valores[1] = {{0,false}, -1}
     }
 
     //Retorna o tamanho do vetor atualmente
@@ -104,10 +103,11 @@ class Mao{
     
 
 };
+*/
 
 int main(){
 
     Mao m;
 
-    m.teste();
+    m.imprimir();
 }
