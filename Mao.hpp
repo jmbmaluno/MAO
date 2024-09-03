@@ -24,18 +24,19 @@ class Mao{
     
     typedef struct{
         float d;
-        int qtde_elementos;
-        int qtde_validos;
+        float qtde_elementos;
+        float qtde_validos;
     } Densidade;
 
 
     Elemento* vetor;
     int len;
+    int altura;
 
 
     Densidade densidade(int i, int f){
-        int qtde_elementos = 0;
-        int qtde_validos = 0;
+        float qtde_elementos = 0;
+        float qtde_validos = 0;
 
         for (int j = i; j <= f; j++){
             qtde_elementos++;
@@ -45,23 +46,37 @@ class Mao{
             }
         }
 
-        return {qtde_validos/qtde_elementos, qtde_elementos, qtde_validos};
+        return {(qtde_validos+1)/qtde_elementos, qtde_elementos, qtde_validos};
     }
 
 
     void rebalancear(int i, int f, Densidade d, int k){
-        Elemento fila = new Elemento[d.qtde_validos];
+
+        int qtde_v = (int)d.qtde_validos;
+        Elemento* fila = new Elemento[qtde_v];
         int pos_fila = 0;
 
-        for (j = i; j <= f; j++){
+        for (int j = i; j <= f; j++){
             if(vetor[j].valido){
                 fila[pos_fila] = vetor[j];
-                pos_fila++;
             }
         }
 
-        //tenho que ver como definir o intervalo a partir do espaço total e qtde de elementos já validos
-        int intervalo = ;
+    
+        for(int j = i; j <= f; j++){
+            if(pos_fila < d.qtde_validos){
+                vetor[j] = fila[pos_fila];
+                pos_fila++;
+            }
+            else{
+                vetor[j] = {0,false};
+            }
+        }
+
+        vetor[qtde_v] = vetor[qtde_v-1];
+        vetor[qtde_v-1] = {k, true};
+
+        delete[] fila;
     }
 
     public:
@@ -72,6 +87,7 @@ class Mao{
         vetor[0] = {0, false};
         vetor[1] = {0, false};
         len = 2;
+        altura = log(len);
     }
 
     int size(){
@@ -81,7 +97,7 @@ class Mao{
     void imprimir(){
         for(int i = 0; i < this->size(); i++){
             if(vetor[i].valido){
-                cout << vetor[i].chave;
+                cout << vetor[i].chave << " ";
             }
         }
 
@@ -98,8 +114,6 @@ class Mao{
         while(i < this->size() && !vetor[i].valido && vetor[i].chave <= k){
             i++;
         }
-
-
 
         if(i < this->size()){
             return i; 
@@ -122,15 +136,62 @@ class Mao{
             
             //Densidade deve receber um intervalo e diz a densidade
             //Densidade = n° elementos armazenados / qtde de posições do vetor
-            Densidade d = densidade(intevalo * l, (intervalo+1) * l - 1);
+            Densidade d = densidade(intervalo * l, (intervalo+1) * l - 1);
 
             //Poderia colocar a densidade para retornar logo os elementos contados e o total de elementos
             //pra facilitar na hora de rebalancear os elementos
-            if(d.d <= 3/4 + 1/4*d/profundiade){
+            if(d.d <= 3/4 + 1/4*profundidade/altura){
                 rebalancear(intervalo*l, (intervalo+1)*l -1, d, k);
+            }
+            else{
+                if(profundidade < 0){
+                    cout << "tive que vim aqui e fica por isso mermo\n";
+
+                    //Contar quantos elementos tem e guardar em uma fila
+                    float qtde_validos = 0;
+
+                    for (int j = 1; j < len; j++){
+                        if(vetor[j].valido){
+                            qtde_validos++;
+                        }
+                    }                 
+                    
+                    Elemento* fila = new Elemento[qtde_validos];
+                    int pos = 0;
+
+                    for(int j = 1; j < len; j++){
+                        if(vetor[j].valido){
+                            fila[pos] = vetor[j];
+                            pos++;
+                        }
+                    }
+
+                    //Dobrar o tamanho do vetor
+                    delete[] vetor;
+                    len = 2*len;
+                    vetor = new Elemento[len];
+                    altura = log(len);
+
+                    //Dividir a quantidade de elementos pela quantidade de folhas
+                    int qtde_folhas = n/log(n);
+                    int qtde_por_folha = qtde_validos/qtde_folhas;
+                    
+                    //Colocar cada quantidade em cada folha
+                    
+
+
+                    delete[] fila;
+                }
+
+                else{
+                    incluir(k, profundidade - 1);
+                }
             }
 
         }
     }
 
+    void teste(){
+        rebalancear(0,1,{0,0,1},2);
+    }
 };
