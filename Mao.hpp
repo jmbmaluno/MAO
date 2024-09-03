@@ -79,6 +79,18 @@ class Mao{
         delete[] fila;
     }
 
+
+    void preencher_folha(int i, Elemento* fila, int& pos_fila, int qtde_por_folha){
+        int pos_inicial = log(this->size()) * i;
+
+        while(qtde_por_folha > 0){
+            vetor[pos_inicial] = fila[pos_fila];
+            pos_fila++;
+            pos_inicial++;
+            qtde_por_folha--;
+        }
+    }
+
     public:
 
     Mao(){
@@ -143,12 +155,13 @@ class Mao{
             if(d.d <= 3/4 + 1/4*profundidade/altura){
                 rebalancear(intervalo*l, (intervalo+1)*l -1, d, k);
             }
+
             else{
                 if(profundidade < 0){
                     cout << "tive que vim aqui e fica por isso mermo\n";
 
                     //Contar quantos elementos tem e guardar em uma fila
-                    float qtde_validos = 0;
+                    int qtde_validos = 0;
 
                     for (int j = 1; j < len; j++){
                         if(vetor[j].valido){
@@ -173,12 +186,15 @@ class Mao{
                     altura = log(len);
 
                     //Dividir a quantidade de elementos pela quantidade de folhas
-                    int qtde_folhas = n/log(n);
+                    int qtde_folhas = len/log(len);
                     int qtde_por_folha = qtde_validos/qtde_folhas;
                     
                     //Colocar cada quantidade em cada folha
-                    
+                    int pos_fila = 0;
 
+                    for(int i = 0; i < qtde_folhas; i++){
+                        preencher_folha(i, fila, pos_fila, qtde_por_folha);
+                    }
 
                     delete[] fila;
                 }

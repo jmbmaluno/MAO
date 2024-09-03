@@ -120,4 +120,6 @@ int main(){
     m.imprimir();
 
     m.incluir(4, log(m.size()));
+
+    m.imprimir();
 }
