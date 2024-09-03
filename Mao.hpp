@@ -76,6 +76,7 @@ class Mao{
         vetor[qtde_v] = vetor[qtde_v-1];
         vetor[qtde_v-1] = {k, true};
 
+
         delete[] fila;
     }
 
@@ -158,26 +159,28 @@ class Mao{
 
             else{
                 if(profundidade < 0){
-                    cout << "tive que vim aqui e fica por isso mermo\n";
 
                     //Contar quantos elementos tem e guardar em uma fila
                     int qtde_validos = 0;
 
-                    for (int j = 1; j < len; j++){
+                    for (int j = 0; j < len; j++){
                         if(vetor[j].valido){
+                            cout << "chave: " << vetor[j].chave << '\n';
                             qtde_validos++;
                         }
                     }                 
                     
-                    Elemento* fila = new Elemento[qtde_validos];
+                    Elemento* fila = new Elemento[qtde_validos+1];
                     int pos = 0;
 
-                    for(int j = 1; j < len; j++){
+                    for(int j = 0; j < len; j++){
                         if(vetor[j].valido){
                             fila[pos] = vetor[j];
                             pos++;
                         }
                     }
+                    
+                    fila[pos] = {k, true};
 
                     //Dobrar o tamanho do vetor
                     delete[] vetor;
@@ -187,12 +190,13 @@ class Mao{
 
                     //Dividir a quantidade de elementos pela quantidade de folhas
                     int qtde_folhas = len/log(len);
-                    int qtde_por_folha = qtde_validos/qtde_folhas;
+                    int qtde_por_folha = (qtde_validos+1)/qtde_folhas;
                     
                     //Tem que ver o qtde_validos pq tá sendo 0
                     cout << "len " << len << "\n";
                     cout << "log " << log(len) << "\n";
                     cout << "qtde_folhas: " << qtde_folhas << "\n";
+                    cout << "qtde_por_folha: " << qtde_por_folha << "\n";
                     //Colocar cada quantidade em cada folha
                     int pos_fila = 0;
 
