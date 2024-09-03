@@ -189,6 +189,10 @@ class Mao{
                     int qtde_folhas = len/log(len);
                     int qtde_por_folha = qtde_validos/qtde_folhas;
                     
+                    //Tem que ver o qtde_validos pq tá sendo 0
+                    cout << "len " << len << "\n";
+                    cout << "log " << log(len) << "\n";
+                    cout << "qtde_folhas: " << qtde_folhas << "\n";
                     //Colocar cada quantidade em cada folha
                     int pos_fila = 0;
 
