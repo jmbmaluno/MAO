@@ -1,5 +1,9 @@
-#include <iostream>
-using namespace std;
+#ifndef MAO_H
+#define MAO_H
+
+#include "Elemento.hpp"
+
+
 
 //Calcula o piso do log de k na base 2
 int log(int k){
@@ -17,12 +21,6 @@ int log(int k){
 
 class Mao{
 
-    typedef struct{
-        int chave;
-        bool valido;
-    } Elemento;
-
-
     Elemento* vetor;
     int len;
     int altura;
@@ -35,6 +33,12 @@ class Mao{
         vetor[0] = {0, false};
         vetor[1] = {0, false};
         len = 2;
+        altura = log(len);
+    }
+
+    Mao(Elemento* v, int l){
+        vetor = v;
+        len = l;
         altura = log(len);
     }
 
@@ -53,3 +57,5 @@ class Mao{
     }
 
 };
+
+#endif

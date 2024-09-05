@@ -109,5 +109,15 @@ int main(){
 
     Mao m;
 
-    m.imprimir();
+    //m.imprimir();
+
+    /*
+    Elemento v[4] = {{1,false}, {2,true}, {3, true}, {4,true}};
+
+    imprimir(v,0,3); cout << "\n\n";
+
+    rebalancear(v, 0, 3);
+
+    imprimir(v, 0, 3);
+    */
 }
