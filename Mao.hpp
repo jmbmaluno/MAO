@@ -169,10 +169,26 @@ class Mao{
             }
 
             else{
-                cout << "preciso dobrar de tamanho\n";
+                len = 2*len;
+                altura = log(len);
+                Elemento* vetor_auxiliar = new Elemento[len];
+
+                for(int i = 0; i < (len/2); i++){
+                    vetor_auxiliar[i] = vetor[i];
+                }
+
+                //delete [] vetor;
+
+                rebalancear(vetor_auxiliar, 0, len-1, k, ant);
+
+                vetor = vetor_auxiliar;
             }
         }
 
+    }
+
+    void teste(){
+        imprimir2(vetor, 0, len-1);
     }
 
 };

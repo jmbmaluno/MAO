@@ -10,7 +10,7 @@ typedef struct{
     bool valido;
 } Elemento;
 
-void imprimir(Elemento* v, int j, int k){
+void imprimir2(Elemento* v, int j, int k){
     for(int i = j; i <= k; i++){
         cout << "Chave: " << v[i].chave << " valido = " << v[i].valido << "\n";
     }
