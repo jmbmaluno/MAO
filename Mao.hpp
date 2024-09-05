@@ -18,29 +18,29 @@ int log(int k){
 
 }
 
-//Calcula 2^k
-int pow_2(int k){
-    int res = 1;
-
-    while(k > 0){
-        res = res << 1;
-        k--;
-    }
-
-    return res;
-}
-
 class Mao{
 
     Elemento* vetor;
     int len;
     int altura;
 
-    float densidade(int i, int j){
+    typedef struct{
+        float d;
+        int validos;
+        int total;
+    } Densidade;
+
+    Densidade densidade(int i, int j, int validos = 0, int total = 0){
         
         //Contando a qtde de elementos validos no vetor + 1 (que é o elemento que eu quero inserir)
         int qtde_validos = 1;
         int qtde_total = 0;
+
+        if(validos != 0 && total != 0){
+            qtde_validos = validos;
+            qtde_total = total;
+        }
+
         for(int k = i; k <= j; k++){
             if(vetor[k].valido){
                 qtde_validos++;
@@ -49,7 +49,7 @@ class Mao{
             qtde_total++;
         }
 
-        return (float)qtde_validos/qtde_total;
+        return {(float)qtde_validos/qtde_total, qtde_validos, qtde_total};
     
     }
 
@@ -85,7 +85,7 @@ class Mao{
     }
     
 
-    void inserir(int k, int profundidade, int pos_filho){
+    void inserir(int k, int profundidade, int pos_filho = 0, int qtde_validos = 0, int qtde_total = 0, int ant = 0){
         int n = this->size();
 
         //Se tá tentando inserir na folha
@@ -113,7 +113,6 @@ class Mao{
 
             //Vou incluir na folha do anterior
             int folha = ant/log(n);
-            cout << "folha: " << folha << "\n";
 
             int qtde_por_folha = n/log(n);
 
@@ -124,27 +123,64 @@ class Mao{
             int pos_final = pos_inicial + qtde_por_folha-1;
 
             //Calculando a densidade do intervalo
-            float dens = densidade(pos_inicial, pos_final);
-            cout << "dens: " << dens << "\n";
+            Densidade dens = densidade(pos_inicial, pos_final);
 
 
-            cout << "inicial: " << pos_inicial << " final: " << pos_final << "\n";
-            
-            cout << "ant: "  << ant << "\n";
-
-            if(dens <= (3*log(n) + profundidade) / (4 * log(n))){
+            if(dens.d <= (3*log(n) + profundidade) / (4 * log(n))){
                 rebalancear(vetor, pos_inicial, pos_final, k, ant);
             }
             else{
-                cout << "folha encheu, mané\n";
-
+                inserir(k, profundidade-1, folha, dens.validos, dens.total, ant);
             }
 
            
+        }
+        else{
+            if(profundidade >= 0){
+                //Se meu filho é par, então tenho que fazer o scan para direita
+                //Se meu filho é impar, então tenho que fazer o scan para esquerda
+
+                int no = pos_filho >> 1;
+                int pos_inicial = no * 2 * qtde_total;;
+                int pos_final = pos_inicial + (2*qtde_total) -1;
+
+                int inicial_filho = pos_filho * qtde_total;
+                int final_filho = inicial_filho + qtde_total - 1;
+
+                Densidade dens;
+
+                //Caso do filho par
+                if(pos_filho % 2 == 0){
+                    dens = densidade(final_filho + 1,pos_final, qtde_validos, qtde_total);
+                }
+
+                //Caso do filho impar
+                else{
+                    dens = densidade(pos_inicial, inicial_filho - 1, qtde_validos, qtde_total);
+                }
+
+                if(dens.d <= (float)(3*log(n) + profundidade) / (4 * log(n))){
+                    rebalancear(vetor, pos_inicial, pos_final, k, ant);
+                }
+
+                else{
+                    inserir(k, profundidade-1, no, dens.validos, dens.total, ant);
+                }
+            }
+
+            else{
+                cout << "preciso dobrar de tamanho\n";
+            }
         }
 
     }
 
 };
 
+
+/*
+FALTA:
+- Adicionar options no inserir. Options no profundidade e no pos_filho
+- Falta subir na árvore
+*/
 #endif

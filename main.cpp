@@ -107,20 +107,17 @@ class Mao{
 
 int main(){
 
-    Elemento v[4] = {{1,true}, {2,false}, {3, true}, {4,false}};
+    Elemento v[4] = {{1,true}, {4,true}, {5, false}, {4,false}};
     
     Mao m(v, 4);
 
-    m.inserir(2, 2, 0);
+    m.inserir(2,2);
 
     m.imprimir();
 
-    m.inserir(5,2,0);
+    m.inserir(5,2);
 
     m.imprimir();
-    
-    m.inserir(6,2,0);
-
 
     /*
     Elemento v[4] = {{1,false}, {2,true}, {3, true}, {4,true}};
