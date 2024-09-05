@@ -110,16 +110,4 @@ int main(){
     Mao m;
 
     m.imprimir();
-
-    m.incluir(3,log(m.size()));
-
-    m.imprimir();
-
-    m.teste();
-
-    m.imprimir();
-
-    m.incluir(4, log(m.size()));
-
-    m.imprimir();
 }
