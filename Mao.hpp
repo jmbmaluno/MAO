@@ -36,8 +36,21 @@ class Mao{
     int len;
     int altura;
 
-    int densidade(int i, int j){
-        return 1;
+    float densidade(int i, int j){
+        
+        //Contando a qtde de elementos validos no vetor + 1 (que é o elemento que eu quero inserir)
+        int qtde_validos = 1;
+        int qtde_total = 0;
+        for(int k = i; k <= j; k++){
+            if(vetor[k].valido){
+                qtde_validos++;
+            }
+
+            qtde_total++;
+        }
+
+        return (float)qtde_validos/qtde_total;
+    
     }
 
     public:
@@ -72,11 +85,11 @@ class Mao{
     }
     
 
-    void inserir(int k, int profunidade, int pos_filho){
+    void inserir(int k, int profundidade, int pos_filho){
         int n = this->size();
 
         //Se tá tentando inserir na folha
-        if(profunidade == log(n)){
+        if(profundidade == log(n)){
 
             //int qtde_folhas = n / log(n);
 
@@ -97,25 +110,37 @@ class Mao{
                 i++;
             }
 
-            if(i >= n){
-                cout << "cheguei até o final\n";
-                cout << "ant: " << ant << "\n";
 
-                //Vou incluir na folha do anterior
-                int folha = ant/log(n);
+            //Vou incluir na folha do anterior
+            int folha = ant/log(n);
+            cout << "folha: " << folha << "\n";
 
-                //Calculando a posição que folha começa e termina
-                int pos_inicial = pow_2(folha);
+            int qtde_por_folha = n/log(n);
 
-                int qtde_por_folha = n/log(n);
-                int pos_final = pos_inicial + qtde_por_folha-1;
+            //Calculando a posição que folha começa e termina
+            int pos_inicial = qtde_por_folha*folha;
 
-                //Calculando a densidade do intervalo
-                int dens = densidade(pos_inicial, pos_final);
+            
+            int pos_final = pos_inicial + qtde_por_folha-1;
+
+            //Calculando a densidade do intervalo
+            float dens = densidade(pos_inicial, pos_final);
+            cout << "dens: " << dens << "\n";
+
+
+            cout << "inicial: " << pos_inicial << " final: " << pos_final << "\n";
+            
+            cout << "ant: "  << ant << "\n";
+
+            if(dens <= (3*log(n) + profundidade) / (4 * log(n))){
+                rebalancear(vetor, pos_inicial, pos_final, k, ant);
             }
             else{
-                cout << "não cheguei ao final e o elemento vai ficar entre " << ant << " e " << i << "\n";
+                cout << "folha encheu, mané\n";
+
             }
+
+           
         }
 
     }

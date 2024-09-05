@@ -16,7 +16,7 @@ void imprimir(Elemento* v, int j, int k){
     }
 }
 
-void rebalancear(Elemento* vetor, int j, int l){
+void rebalancear(Elemento* vetor, int j, int l, int k, int ant){
     int qtde_validos = 0;
 
     for(int i = j; i <= l; i++){
@@ -24,7 +24,7 @@ void rebalancear(Elemento* vetor, int j, int l){
             qtde_validos++;
     }
 
-    Elemento* fila_auxiliar = new Elemento[qtde_validos];
+    Elemento* fila_auxiliar = new Elemento[qtde_validos+1];
     int pos_fila = 0;
 
     for(int i = j; i <=l; i++){
@@ -33,14 +33,20 @@ void rebalancear(Elemento* vetor, int j, int l){
             pos_fila++;
             vetor[i].valido = false;
         }
+
+        if(i == ant){
+            fila_auxiliar[pos_fila] = {k, true};
+            pos_fila++;
+        }
     }
+    
 
     //Usando a ideia do Bresenham's line algorithm
     pos_fila = 0;
     int pos;
 
-    for(int passo = 0; passo <= (qtde_validos-1); passo++){
-        pos = j + passo*(l-j)/(qtde_validos-1);
+    for(int passo = 0; passo <= (qtde_validos); passo++){
+        pos = j + passo*(l-j)/(qtde_validos);
         
         vetor[pos] = fila_auxiliar[pos_fila];
         pos_fila++;

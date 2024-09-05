@@ -111,9 +111,16 @@ int main(){
     
     Mao m(v, 4);
 
-    m.inserir(5, 2, 0);
+    m.inserir(2, 2, 0);
 
-    //m.imprimir();
+    m.imprimir();
+
+    m.inserir(5,2,0);
+
+    m.imprimir();
+    
+    m.inserir(6,2,0);
+
 
     /*
     Elemento v[4] = {{1,false}, {2,true}, {3, true}, {4,true}};
