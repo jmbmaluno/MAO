@@ -85,16 +85,19 @@ class Mao{
     }
     
 
-    void inserir(int k, int profundidade, int pos_filho = 0, int qtde_validos = 0, int qtde_total = 0, int ant = 0){
+    void inserir(int k, int profundidade = -2, int pos_filho = 0, int qtde_validos = 0, int qtde_total = 0, int ant = 0){
         int n = this->size();
+
+        if(profundidade == -2){
+            profundidade = log(n);
+        }
 
         //Se tá tentando inserir na folha
         if(profundidade == log(n)){
 
             //int qtde_folhas = n / log(n);
-
             //posição do elemento anterior
-            int ant = 0;
+            int ant = -1;
 
             //posição do elemento sucesosr
             int i = 0;
@@ -103,18 +106,34 @@ class Mao{
             //Procurar entre quais posições o elemento vai ficar
             //Logo, vou procurar enquanto o elemento visto for invalido ou enquanto ele for valido e menor do que a chave que quero inserir
             while(i < n && (vetor[i].valido == false || (vetor[i].valido && vetor[i].chave < k))){
-                if(vetor[i].valido && vetor[i].chave < k && vetor[i].chave>= vetor[ant].chave){
-                    ant = i;
+                if(vetor[i].valido){
+                    if(ant == -1){
+                        ant = i;
+                    }
+                    else{
+                        if(vetor[i].chave >= vetor[ant].chave){
+                            ant = i;
+                        }
+                    }
                 }
 
                 i++;
             }
 
-
             //Vou incluir na folha do anterior
             int folha = ant/log(n);
 
+            if(folha < 0){
+                folha = 0;
+            }
+
             int qtde_por_folha = n/log(n);
+
+            //Caso em que n = 2, todas as folhas estão cheias e quero incluir um elemento que é maior
+            //do que todos que estão no vetor
+            if(qtde_por_folha * folha >= len){
+                folha = folha-1;
+            }
 
             //Calculando a posição que folha começa e termina
             int pos_inicial = qtde_por_folha*folha;
@@ -151,7 +170,13 @@ class Mao{
 
                 //Caso do filho par
                 if(pos_filho % 2 == 0){
-                    dens = densidade(final_filho + 1,pos_final, qtde_validos, qtde_total);
+                    //Caso de só ter um filho
+                    if(pos_final >= len){
+                        dens = densidade(inicial_filho, final_filho, qtde_validos, qtde_total);
+                    }
+                    else{
+                        dens = densidade(final_filho + 1,pos_final, qtde_validos, qtde_total);
+                    }
                 }
 
                 //Caso do filho impar
@@ -176,8 +201,6 @@ class Mao{
                 for(int i = 0; i < (len/2); i++){
                     vetor_auxiliar[i] = vetor[i];
                 }
-
-                //delete [] vetor;
 
                 rebalancear(vetor_auxiliar, 0, len-1, k, ant);
 
