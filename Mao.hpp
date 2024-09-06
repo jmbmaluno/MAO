@@ -2,7 +2,7 @@
 #define MAO_H
 
 #include "Elemento.hpp"
-
+#include <climits>
 
 
 //Calcula o piso do log de k na base 2
@@ -30,6 +30,7 @@ class Mao{
         int total;
     } Densidade;
 
+    //Calcula a densidade dentro do intervalo i até j
     Densidade densidade(int i, int j, int validos = 0, int total = 0){
         
         //Contando a qtde de elementos validos no vetor + 1 (que é o elemento que eu quero inserir)
@@ -55,6 +56,7 @@ class Mao{
 
     public:
 
+    //O vetor começa contando apenas 2 elementos
     Mao(){
         vetor = new Elemento[2];
 
@@ -84,6 +86,22 @@ class Mao{
         cout << "\n";
     }
     
+    int sucessor(int k){
+        int i = 0;
+        int n = len;
+
+        while(i < n && (vetor[i].valido == false || (vetor[i].valido && vetor[i].chave <= k))){
+            i++;
+        }
+
+        if(i >= n){
+            return INT_MAX;
+        }
+        else{
+            return vetor[i].chave;
+        }
+
+    }
 
     void inserir(int k, int profundidade = -2, int pos_filho = 0, int qtde_validos = 0, int qtde_total = 0, int ant = 0){
         int n = this->size();
@@ -95,11 +113,10 @@ class Mao{
         //Se tá tentando inserir na folha
         if(profundidade == log(n)){
 
-            //int qtde_folhas = n / log(n);
             //posição do elemento anterior
             int ant = -1;
 
-            //posição do elemento sucesosr
+            //posição do elemento sucessor
             int i = 0;
 
             
@@ -135,7 +152,7 @@ class Mao{
                 folha = folha-1;
             }
 
-            //Calculando a posição que folha começa e termina
+            //Calculando a posição em que folha começa e termina
             int pos_inicial = qtde_por_folha*folha;
 
             
@@ -145,9 +162,11 @@ class Mao{
             Densidade dens = densidade(pos_inicial, pos_final);
 
 
+            //Se tá dentro do aceitável, então apenas rebalancear
             if(dens.d <= (3*log(n) + profundidade) / (4 * log(n))){
                 rebalancear(vetor, pos_inicial, pos_final, k, ant);
             }
+            //Se tá fora do aceitavel então chamo a função recursivamente para um nível acima
             else{
                 inserir(k, profundidade-1, folha, dens.validos, dens.total, ant);
             }
@@ -192,7 +211,8 @@ class Mao{
                     inserir(k, profundidade-1, no, dens.validos, dens.total, ant);
                 }
             }
-
+            
+            //Caso de dobrar o tamanho do vetor
             else{
                 len = 2*len;
                 altura = log(len);
@@ -211,6 +231,7 @@ class Mao{
 
     }
 
+    //Praticamente igual ao algoritmo de inserir
     void remover(int k, int profundidade = -2, int pos_filho = 0, int qtde_validos = 0, int qtde_total = 0, int pos = 0){
         int n = this->size();
 
@@ -305,10 +326,6 @@ class Mao{
         }
     }
 
-
-    void teste(){
-        imprimir2(vetor, 0, len-1);
-    }
 
 };
 

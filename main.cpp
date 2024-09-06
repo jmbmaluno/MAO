@@ -1,129 +1,68 @@
 #include "Mao.hpp"
+#include <fstream>
 
 
-/*
-IDEIA: guardar os maiores valores de cada folha e a posição deles no subspaço da folha para facilitar a busca de onde os elementos devem estar
-guardando os maiores valores eu posso fazer uma busca binária neles para saber onde o valor buscado deveria estar.
-*/
+int main(int nargs, char* argv[]){
 
-/*
-class Mao{
-
-    //Para marcar quais posições do vetores foram efetivamente preenchidas pelo usuário e quais são apenas lixo de memória
-    //Vou fazer um vetor de uma struct Valor, que terá o valor da inclusão propriamente dito e um valor boolenado
-    //Esse valor booleando é para indicar se foi feita ou não uma inclusão naquela posição de memória.
-    //Nesse caso, as remoçoes se resumem a apenas trocar o valor booleano do elemento do vetor (claro, obedecendo as propriedades da MAO)
-    typedef struct{
-        int chave;
-        bool b;
-    } Valor;
-    
-    typedef struct {
-        Valor valor;
-        int pos;
-    } Max;
-
-    Valor* vetor;
-    Valor* max_valores;
-    int len;
-
-    
-    
-    int contar_valores(int no){
-        int cont = i.qtde;
-        int h = log(this->size());
-
-       
-        for(int i = no*h; i < no*h + h; i++){
-            if(vetor[i].b) cont++;
-        }
-
-
-        return cont;
+    if(nargs <= 1){
+        cout << "não há argumentos suficientes para o programa rodar\n";
+        cout << "Tente colocar como argumento o txt para executar ações na árvore\n";
+        return 1;
     }
 
-    //Não sei como fazer a busca ainda
-    int buscar(int k, int pos){
-        int h = log(this->size());
+    string entrada = argv[1];
 
-        maior = k;
+    ifstream arq (entrada.data());
 
-        for(int i = pos * h; i < pos * h + h; i++){
-            if(vetor[i].b){
-                if(vetor[i].chave == k) return i;
-                if(vetor[i].chave > k) maior = vetor[i].chave;
+    string s;
+
+    Mao M;
+    int v = 0;
+    int linha = 0;
+
+    while(!arq.eof()){
+        string instrucao;
+
+        try{
+            if(getline(arq, s)){
+                instrucao = s.substr(0, 3);
+                linha = linha + 1;
+
+                if("INC" == s.substr(0,3)){ 
+                    M.inserir(stoi(s.substr(4)));
+                }
+
+                if("IMP" == s.substr(0,3)){
+                    M.imprimir();
+                }
+
+                if("REM" == s.substr(0,3)){
+                    M.remover(stoi(s.substr(4)));
+                }
+
+                if("SUC" == s.substr(0,3)){
+
+                    int res =  M.sucessor(stoi(s.substr(4)));
+
+                    if(res == INT_MAX) cout << "INFINITO\n";
+                    else cout << res << "\n";
+                }
             }
         }
+        catch(exception& e){
+            cout << "\nERRO: A INSTRUÇÃO '" << instrucao <<"' NA LINHA " << linha <<" NÃO ESTÁ ESCRITA CORRETAMENTE\n";
 
+            
+            if("INC" == instrucao) cout << "O correto é 'INC' 'valor que será incluso'\n";
+            if("REM" == instrucao) cout << "O correto é 'REM' 'valor que será removido'\n";
+            if("SUC" == instrucao) cout << "O correto é 'SUC' 'valor que será buscado' 'versão'\n";
+            if("IMP" == instrucao) cout << "O correto é 'IMP' 'versão'\n";
 
-    }
+            cout << "Corrija o arquivo de texto\n\n";
 
-    public: 
+        
 
-    //Construtor - Começando o vetor com duas posições. 
-    //Quando for necessário criar um vetor com o dobro do tamanho do anterior
-    Mao(){
-        vetor = new Valor[2];
-
-        vetor[0] = {0, false};
-        vetor[1] = {0, false};
-        len = 2;
-
-        max_valores = new Max[2];
-        max_valores[0] = {{0,false}, -1}
-        max_valores[1] = {{0,false}, -1}
-    }
-
-    //Retorna o tamanho do vetor atualmente
-    int size(){
-        return len;
-    }
-
-
-    void inserir(int k){
-        //Fazer busca binária no vetor
-        //Mas como faz quando vc encontra um espaço vazio?
-        //ACHO que posso olhar a vizinhança 
-
-    }
-
-    //Imprimir em ordem apenas os valores cujo booleano é diferente de false
-    void imprimir(){
-        for (int i = 0; i < this->size(); i++){
-            if(vetor[i].b){
-                cout << vetor[i].chave << "\n";
-            }
+            return 1;
         }
-
     }
-
-    void teste(){
-        cout << contar_valores(0) << "\n";
-    }
-    
-
-};
-*/
-
-int main(){
-
-    Mao m;
-
-    m.inserir(1);
-
-    m.imprimir();
-
-    m.remover(1);
-
-    m.teste();
-    
-    /*
-    Elemento v[4] = {{1,false}, {2,true}, {3, true}, {4,true}};
-
-    imprimir(v,0,3); cout << "\n\n";
-
-    rebalancear(v, 0, 3);
-
-    imprimir(v, 0, 3);
-    */
 }

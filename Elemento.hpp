@@ -5,17 +5,14 @@
 
 using namespace std;
 
+//Como o vetor vai ter buracos. Para eu saber oq é valido ou não, fiz uma struct
+//Vou contar como lixo de memoria aquilo que tiver bool = false
 typedef struct{
     int chave;
     bool valido;
 } Elemento;
 
-void imprimir2(Elemento* v, int j, int k){
-    for(int i = j; i <= k; i++){
-        cout << "Chave: " << v[i].chave << " valido = " << v[i].valido << "\n";
-    }
-}
-
+//Coloca o vetor com os elementos espaçados adequadamente
 void rebalancear(Elemento* vetor, int j, int l, int k = -1, int ant = -2){
     int qtde_validos = 0;
 
