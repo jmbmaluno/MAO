@@ -16,7 +16,7 @@ void imprimir2(Elemento* v, int j, int k){
     }
 }
 
-void rebalancear(Elemento* vetor, int j, int l, int k, int ant){
+void rebalancear(Elemento* vetor, int j, int l, int k = -1, int ant = -2){
     int qtde_validos = 0;
 
     for(int i = j; i <= l; i++){
@@ -24,7 +24,15 @@ void rebalancear(Elemento* vetor, int j, int l, int k, int ant){
             qtde_validos++;
     }
 
-    Elemento* fila_auxiliar = new Elemento[qtde_validos+1];
+    Elemento* fila_auxiliar;
+    
+    if(ant == -2){
+        fila_auxiliar = new Elemento[qtde_validos];
+    }
+    else{
+        fila_auxiliar = new Elemento[qtde_validos+1];
+    }
+
     int pos_fila = 0;
 
     if(ant == -1){
@@ -50,7 +58,9 @@ void rebalancear(Elemento* vetor, int j, int l, int k, int ant){
     int pos;
 
     if(qtde_validos == 0){
-        vetor[j] = fila_auxiliar[0];
+        if(ant != -2){
+            vetor[j] = fila_auxiliar[0];
+        }
     }
     else{
         for(int passo = 0; passo <= (qtde_validos); passo++){
@@ -62,7 +72,7 @@ void rebalancear(Elemento* vetor, int j, int l, int k, int ant){
         }
     }
 
-    delete fila_auxiliar;
+    delete[] fila_auxiliar;
 }
 
 

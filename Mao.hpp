@@ -202,6 +202,7 @@ class Mao{
                     vetor_auxiliar[i] = vetor[i];
                 }
 
+                delete [] vetor;
                 rebalancear(vetor_auxiliar, 0, len-1, k, ant);
 
                 vetor = vetor_auxiliar;
@@ -210,6 +211,101 @@ class Mao{
 
     }
 
+    void remover(int k, int profundidade = -2, int pos_filho = 0, int qtde_validos = 0, int qtde_total = 0, int pos = 0){
+        int n = this->size();
+
+        if(profundidade == -2){
+            profundidade = log(n);
+        }
+
+        if(profundidade == log(n)){
+            
+            //Pos de k no vetor
+            int i = 0;
+
+            while(i < n && (vetor[i].valido == false || (vetor[i].valido && vetor[i].chave < k))){
+                i = i + 1;
+            }
+
+            if(i < n && vetor[i].valido && vetor[i].chave == k){
+
+                int folha = i/log(n);
+
+                int qtde_por_folha = n/log(n);
+
+                int pos_inicial = qtde_por_folha * folha;
+
+                int pos_final = pos_inicial + qtde_por_folha -1;
+
+                Densidade dens = densidade(pos_inicial, pos_final);
+
+                if(dens.d >= (2*log(n) - profundidade)/(4*log(n))){
+                    vetor[i].valido = false;
+                    rebalancear(vetor, pos_inicial, pos_final);
+                }
+
+                else{
+                    remover(k, profundidade-1, folha, dens.validos, dens.total, i);
+                }
+            }
+
+        }
+        else{
+            if(profundidade >= 0){
+                int no = pos_filho >> 1;
+                int pos_inicial = no * 2 * qtde_total;
+                int pos_final = pos_filho * qtde_total;
+
+                int inicial_filho = pos_filho * qtde_total;
+                int final_filho = inicial_filho * qtde_total -1;
+
+                Densidade dens;
+
+                if(pos_filho % 2 == 0){
+                    if(pos_final >= len){
+                        dens = densidade(inicial_filho, final_filho, qtde_validos, qtde_total);
+                    }
+                    else{
+                        dens = densidade(final_filho + 1, pos_final, qtde_validos, qtde_total);
+                    }
+                }
+
+                else{
+                    dens = densidade(pos_inicial, inicial_filho-1, qtde_validos, qtde_total);
+                }
+
+                if(dens.d >= (2*log(n) - profundidade)/(4*log(n))){
+                    vetor[pos].valido = false;
+                    rebalancear(vetor, pos_inicial, pos_final);
+                }
+
+                else{
+                    remover(k, profundidade-1, no, dens.validos, dens.total, pos);
+                }
+            }
+            else{
+                len = len/2;
+                altura = log(len);
+                Elemento* vetor_auxiliar = new Elemento[len];
+                int cont_aux = 0;
+
+                for(int i = 0; i < 2*len; i++){
+                    if(vetor[i].valido){
+                        vetor_auxiliar[cont_aux] = vetor[i];
+                        cont_aux++;
+                    }
+                }
+
+                delete [] vetor;
+
+                rebalancear(vetor_auxiliar, 0, len-1);
+
+                vetor = vetor_auxiliar;
+            }
+        }
+    }
+
+
     void teste(){
         imprimir2(vetor, 0, len-1);
     }
@@ -217,9 +313,4 @@ class Mao{
 };
 
 
-/*
-FALTA:
-- Adicionar options no inserir. Options no profundidade e no pos_filho
-- Falta subir na árvore
-*/
 #endif

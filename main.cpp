@@ -113,14 +113,10 @@ int main(){
 
     m.imprimir();
 
-    m.inserir(4);
+    m.remover(1);
 
-    m.imprimir();
-
-    m.inserir(-1);
-
-    m.imprimir();
-
+    m.teste();
+    
     /*
     Elemento v[4] = {{1,false}, {2,true}, {3, true}, {4,true}};
 
