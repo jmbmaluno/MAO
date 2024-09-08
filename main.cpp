@@ -9,9 +9,12 @@ Manutenção de Arquivos Ordenados
 int main(int nargs, char* argv[]){
 
     if(nargs <= 1){
+        
         cout << "não há argumentos suficientes para o programa rodar\n";
         cout << "Tente colocar como argumento o txt para executar ações na árvore\n";
         return 1;
+
+        return 0;
     }
 
     string entrada = argv[1];

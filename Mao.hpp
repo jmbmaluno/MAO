@@ -30,6 +30,12 @@ class Mao{
         int total;
     } Densidade;
 
+    typedef struct{
+        int pos;
+        int pos_ant;
+        int pos_suc;
+    } ValorBusca;
+
     //Calcula a densidade dentro do intervalo i até j
     Densidade densidade(int i, int j, int validos = 0, int total = 0, bool inc = true){
         
@@ -63,9 +69,110 @@ class Mao{
     
     }
 
+    ValorBusca busca_binaria(int pos_inicial, int pos_final, int k){
+        int ant;
+        int suc;
+
+
+        if(pos_final < pos_inicial) {
+
+            //Nesse caso, eu não achei k e sua posição no vetor será -1
+            //Mas eu pegarei o resultado da pos_final para checar onde está o antecessor e sucessor
+            //Partindo da pos_final, andarei para esquerda até achar um valor válido e esse será o antecessor
+            //Partiando da pos_final, andarei para direita até achar um valor válido e esse será o sucessor
+            //Se chegar no fim do vetor e não tiver antecessor válido, então ant = -1
+            //Se chegar no fim do vetor e não tiver sucessor válido, então suc = len
+
+
+            //buscando antecessor
+            ant = pos_final;
+
+            while(ant >= 0 && vetor[ant].valido == false){
+                ant--;
+            }
+
+            //buscando sucessor
+            suc = pos_final+1;
+
+            while(suc <= len-1 && vetor[suc].valido == false){
+                suc++;
+            }
+
+            return {-1, ant, suc};
+        }
+
+        int pos = (pos_inicial + pos_final)/2;
+
+        if(vetor[pos].valido && vetor[pos].chave == k){
+            
+            //Nesse caso, achei k, logo partirei da posição dele para procurar linearmente o suc e o antecessor
+            
+            ant = pos-1;
+
+            while(ant >= 0 && vetor[ant].valido == false){
+                ant--;
+            }
+
+            suc = pos+1;
+            while(suc <= len-1 && vetor[suc].valido == false){
+                suc++;
+            }
+            
+            return {pos,ant,suc};
+        } 
+        else{
+            if(vetor[pos].valido && vetor[pos].chave < k) return busca_binaria(pos+1, pos_final, k);
+
+            if(vetor[pos].valido && vetor[pos].chave > k) return busca_binaria(pos_inicial, pos-1, k);
+
+            else{
+                int n = len;
+                int folha = pos/log(n);
+
+                int qtde_por_folha = n/log(n);
+
+                if(n != 2 && log(n) % 2 == 1 && folha != ((n-1)/log(n))){
+                    qtde_por_folha = qtde_por_folha + 1;
+                }
+
+                int pos_inicial_folha = qtde_por_folha * folha;
+
+                int i;
+
+                for(i = pos_inicial_folha; i <= pos_final; i++){
+                    if(vetor[i].valido){
+                        if(vetor[i].chave == k){
+
+                            //Nesse caso pos caiu em um valor vazio mas procurando na folha dele eu achei k
+                            //Partindo da posição de k procurarei seu sucessor e seu antecessor
+                            ant = i - 1;
+
+                            while(ant >= 0 && vetor[ant].valido == false){
+                                ant--;
+                            }
+
+                            suc = i+1;
+
+                            while(suc <= len-1 && vetor[suc].valido == false){
+                                suc++;
+                            }
+
+                            return {i, ant, suc};
+                        }
+
+                        if(vetor[i].chave > k) return busca_binaria(pos_inicial, i-1, k);
+                    }
+                }
+
+                return busca_binaria(i+1, pos_final, k);
+
+            }
+        }
+    }
+
     public:
 
-    //O vetor começa contando apenas 2 elementos
+    //O vetor começa com apenas 2 elementos
     Mao(){
         vetor = new Elemento[2];
 
@@ -81,10 +188,6 @@ class Mao{
         altura = log(len);
     }
 
-    int size(){
-        return len;
-    }
-
     void imprimir(){
         for(int i = 0; i < len; i++){
             if(vetor[i].valido){
@@ -96,24 +199,18 @@ class Mao{
     }
     
     int sucessor(int k){
-        int i = 0;
-        int n = len;
+        ValorBusca v = busca_binaria(0,len-1,k);
 
-        while(i < n && (vetor[i].valido == false || (vetor[i].valido && vetor[i].chave <= k))){
-            i++;
-        }
-
-        if(i >= n){
+        if(v.pos_suc == len || v.pos_ant == len-1){
             return INT_MAX;
         }
-        else{
-            return vetor[i].chave;
-        }
+
+        return vetor[v.pos_suc].chave;
 
     }
 
     void inserir(int k, int profundidade = -2, int pos_filho = 0, int qtde_validos = 0, int qtde_total = 0, int ant = 0){
-        int n = this->size();
+        int n = len;
 
         if(profundidade == -2){
             profundidade = log(n);
@@ -131,20 +228,8 @@ class Mao{
             
             //Procurar entre quais posições o elemento vai ficar
             //Logo, vou procurar enquanto o elemento visto for invalido ou enquanto ele for valido e menor do que a chave que quero inserir
-            while(i < n && (vetor[i].valido == false || (vetor[i].valido && vetor[i].chave < k))){
-                if(vetor[i].valido){
-                    if(ant == -1){
-                        ant = i;
-                    }
-                    else{
-                        if(vetor[i].chave >= vetor[ant].chave){
-                            ant = i;
-                        }
-                    }
-                }
-
-                i++;
-            }
+            ValorBusca v = busca_binaria(0, len-1, k);
+            ant = v.pos_ant;
 
             //Vou incluir na folha do anterior
             int folha = ant/log(n);
@@ -157,6 +242,7 @@ class Mao{
             int qtde_por_folha = n/log(n);
 
 
+            //Caso de a folha ter tamanhos de intervalo diferentes. Ex: n = 8
             if(n != 2 && log(n) % 2 == 1 && folha != ((n-1)/log(n))){
                 qtde_por_folha = qtde_por_folha + 1;
             }
@@ -174,7 +260,7 @@ class Mao{
 
             //Calculando a densidade do intervalo
             Densidade dens = densidade(pos_inicial, pos_final);
-
+            
             //Se tá dentro do aceitável, então apenas rebalancear
             if(dens.d <= (3*log(n) + profundidade) / (4 * log(n))){
                 rebalancear(vetor, pos_inicial, pos_final, k, ant);
@@ -235,7 +321,7 @@ class Mao{
                     vetor_auxiliar[i] = vetor[i];
                 }
 
-                delete [] vetor;
+                //delete [] vetor;
                 rebalancear(vetor_auxiliar, 0, len-1, k, ant);
 
                 vetor = vetor_auxiliar;
@@ -246,7 +332,7 @@ class Mao{
 
     //Praticamente igual ao algoritmo de inserir
     void remover(int k, int profundidade = -2, int pos_filho = 0, int qtde_validos = 0, int qtde_total = 0, int pos = 0){
-        int n = this->size();
+        int n = len;
 
         if(profundidade == -2){
             profundidade = log(n);
@@ -255,13 +341,9 @@ class Mao{
         if(profundidade == log(n)){
             
             //Pos de k no vetor
-            int i = 0;
-
-            while(i < n && (vetor[i].valido == false || (vetor[i].valido && vetor[i].chave < k))){
-                i = i + 1;
-            }
-
-            if(i < n && vetor[i].valido && vetor[i].chave == k){
+            int i = busca_binaria(0, len-1, k).pos;
+            
+            if(i > -1 && vetor[i].valido && vetor[i].chave == k){
 
                 int folha = i/log(n);
             
@@ -335,15 +417,12 @@ class Mao{
                     }
                 }
 
-                delete [] vetor;
-
                 rebalancear(vetor_auxiliar, 0, len-1);
 
                 vetor = vetor_auxiliar;
             }
         }
     }
-
 
 };
 

@@ -83,6 +83,4 @@ void rebalancear(Elemento* vetor, int j, int l, int k = -1, int ant = -2){
     delete[] fila_auxiliar;
 }
 
-//8 + 1 *(11-8)/2 = 8 + 3/2 = 16/2 + 3/2 = 19/2 = 9,5 = 9
-//8 + 3 = 11
 #endif
