@@ -60,17 +60,29 @@ void rebalancear(Elemento* vetor, int j, int l, int k = -1, int ant = -2){
         }
     }
     else{
-        for(int passo = 0; passo <= (qtde_validos); passo++){
-            pos = j + passo*(l-j)/(qtde_validos);
+        if(ant == -2){
+            for(int passo = 0; passo < (qtde_validos); passo++){
+                pos = j + passo*(l-j)/(qtde_validos);
 
-            vetor[pos] = fila_auxiliar[pos_fila];
+                vetor[pos] = fila_auxiliar[pos_fila];
 
-            pos_fila++;
+                pos_fila++;
+            }
+        }
+        else{
+            for(int passo = 0; passo <= (qtde_validos); passo++){
+                pos = j + passo*(l-j)/(qtde_validos);
+
+                vetor[pos] = fila_auxiliar[pos_fila];
+
+                pos_fila++;
+            }
         }
     }
 
     delete[] fila_auxiliar;
 }
 
-
+//8 + 1 *(11-8)/2 = 8 + 3/2 = 16/2 + 3/2 = 19/2 = 9,5 = 9
+//8 + 3 = 11
 #endif

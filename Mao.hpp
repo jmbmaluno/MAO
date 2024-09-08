@@ -31,17 +31,26 @@ class Mao{
     } Densidade;
 
     //Calcula a densidade dentro do intervalo i até j
-    Densidade densidade(int i, int j, int validos = 0, int total = 0){
+    Densidade densidade(int i, int j, int validos = 0, int total = 0, bool inc = true){
         
         //Contando a qtde de elementos validos no vetor + 1 (que é o elemento que eu quero inserir)
-        int qtde_validos = 1;
+        int qtde_validos;
+
+        if(inc){
+            qtde_validos = 1;
+        }
+        else{
+            qtde_validos = 0;
+        }
+
         int qtde_total = 0;
+
 
         if(validos != 0 && total != 0){
             qtde_validos = validos;
             qtde_total = total;
         }
-
+        
         for(int k = i; k <= j; k++){
             if(vetor[k].valido){
                 qtde_validos++;
@@ -49,7 +58,7 @@ class Mao{
 
             qtde_total++;
         }
-
+        
         return {(float)qtde_validos/qtde_total, qtde_validos, qtde_total};
     
     }
@@ -77,7 +86,7 @@ class Mao{
     }
 
     void imprimir(){
-        for(int i = 0; i < this->size(); i++){
+        for(int i = 0; i < len; i++){
             if(vetor[i].valido){
                 cout << vetor[i].chave << " ";
             }
@@ -112,7 +121,7 @@ class Mao{
 
         //Se tá tentando inserir na folha
         if(profundidade == log(n)){
-
+            
             //posição do elemento anterior
             int ant = -1;
 
@@ -137,30 +146,42 @@ class Mao{
                 i++;
             }
 
+            /*
+            if(k == 7){
+                cout << "ant do 7: " << ant << "\n";
+
+                for(int i = 0; i < 8; i++){
+                    cout << vetor[i].chave <<  " " << vetor[i].valido << "\n";
+                }
+            }*/
             //Vou incluir na folha do anterior
             int folha = ant/log(n);
 
+            
             if(folha < 0){
                 folha = 0;
             }
 
             int qtde_por_folha = n/log(n);
 
-            //Caso em que n = 2, todas as folhas estão cheias e quero incluir um elemento que é maior
-            //do que todos que estão no vetor
+
+            if(n != 2 && log(n) % 2 == 1 && folha != ((n-1)/log(n))){
+                qtde_por_folha = qtde_por_folha + 1;
+            }
+
+
+            //Caso que n = 2, a folha já está cheia e quero incluir alguem maior do que todos os elementos
             if(qtde_por_folha * folha >= len){
-                folha = folha-1;
+                folha--;
             }
 
             //Calculando a posição em que folha começa e termina
             int pos_inicial = qtde_por_folha*folha;
 
-            
             int pos_final = pos_inicial + qtde_por_folha-1;
 
             //Calculando a densidade do intervalo
             Densidade dens = densidade(pos_inicial, pos_final);
-
 
             //Se tá dentro do aceitável, então apenas rebalancear
             if(dens.d <= (3*log(n) + profundidade) / (4 * log(n))){
@@ -251,18 +272,23 @@ class Mao{
             if(i < n && vetor[i].valido && vetor[i].chave == k){
 
                 int folha = i/log(n);
-
+            
                 int qtde_por_folha = n/log(n);
+
+                if(n != 2 && log(n) % 2 == 1 && folha != ((n-1)/log(n))){
+                    qtde_por_folha = qtde_por_folha + 1;
+                }
 
                 int pos_inicial = qtde_por_folha * folha;
 
                 int pos_final = pos_inicial + qtde_por_folha -1;
 
-                Densidade dens = densidade(pos_inicial, pos_final);
+                vetor[i].valido = false;
+
+                Densidade dens = densidade(pos_inicial, pos_final, false);
 
                 if(dens.d >= (2*log(n) - profundidade)/(4*log(n))){
-                    vetor[i].valido = false;
-                    rebalancear(vetor, pos_inicial, pos_final);
+                    rebalancear(vetor, pos_inicial, pos_final, i);
                 }
 
                 else{
@@ -284,20 +310,19 @@ class Mao{
 
                 if(pos_filho % 2 == 0){
                     if(pos_final >= len){
-                        dens = densidade(inicial_filho, final_filho, qtde_validos, qtde_total);
+                        dens = densidade(inicial_filho, final_filho, qtde_validos, qtde_total, false);
                     }
                     else{
-                        dens = densidade(final_filho + 1, pos_final, qtde_validos, qtde_total);
+                        dens = densidade(final_filho + 1, pos_final, qtde_validos, qtde_total, false);
                     }
                 }
 
                 else{
-                    dens = densidade(pos_inicial, inicial_filho-1, qtde_validos, qtde_total);
+                    dens = densidade(pos_inicial, inicial_filho-1, qtde_validos, qtde_total, false);
                 }
 
                 if(dens.d >= (2*log(n) - profundidade)/(4*log(n))){
-                    vetor[pos].valido = false;
-                    rebalancear(vetor, pos_inicial, pos_final);
+                    rebalancear(vetor, pos_inicial, pos_final, pos);
                 }
 
                 else{
@@ -305,6 +330,7 @@ class Mao{
                 }
             }
             else{
+
                 len = len/2;
                 altura = log(len);
                 Elemento* vetor_auxiliar = new Elemento[len];
