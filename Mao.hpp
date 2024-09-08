@@ -146,14 +146,6 @@ class Mao{
                 i++;
             }
 
-            /*
-            if(k == 7){
-                cout << "ant do 7: " << ant << "\n";
-
-                for(int i = 0; i < 8; i++){
-                    cout << vetor[i].chave <<  " " << vetor[i].valido << "\n";
-                }
-            }*/
             //Vou incluir na folha do anterior
             int folha = ant/log(n);
 
